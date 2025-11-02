@@ -28,6 +28,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.config.Configure;
 import com.deepoove.poi.config.ConfigureBuilder;
+import com.deepoove.poi.data.RowRenderData;
+import com.deepoove.poi.data.Rows;
 import com.deepoove.poi.plugin.table.LoopColumnTableRenderPolicy;
 import com.deepoove.poi.plugin.table.LoopRowTableRenderPolicy;
 import com.github.pagehelper.PageHelper;
@@ -107,8 +109,11 @@ import lombok.extern.slf4j.Slf4j;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.DocChartSettingDto;
 import com.springreport.base.PageEntity;
+import com.springreport.base.ServerTableData;
+import com.springreport.base.ServerTablePolicy;
 import com.springreport.base.TDengineConnection;
 import com.springreport.base.UserInfoDto;
+import com.springreport.base.WordTableMerge;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.doctpl.DocDto;
 import com.springreport.dto.doctpl.DocImageDto;
@@ -137,6 +142,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -677,7 +683,27 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 								}
 							}
 						}
-					}else {
+					}else if(datasetData instanceof ServerTableData) {
+						ServerTableData serverTableData = (ServerTableData) datasetData;
+						List<Map<String, Object>> datas = serverTableData.getGroupDataList();
+						if(ListUtil.isNotEmpty(attrs) && ListUtil.isNotEmpty(datas)) {
+							for (int t = 0; t < datas.size(); t++) {
+								for (int j = 0; j < attrs.size(); j++) {
+									if(datas.get(t).containsKey(attrs.getString(j))) {
+										JSONArray paramsArray = null;
+										if(subParams.containsKey(attrs.getString(j))) {
+											paramsArray = (JSONArray) subParams.get(attrs.getString(j));
+										}else {
+											paramsArray = new JSONArray();
+											subParams.put(attrs.getString(j), paramsArray);
+										}
+										paramsArray.add(datas.get(t).get(attrs.getString(j)));
+									}
+								}
+							}
+						}
+					}
+					else {
 						Map<String, Object> objectData = (Map<String, Object>) datasetData;
 						if(ListUtil.isNotEmpty(attrs)) {
 							for (int j = 0; j < attrs.size(); j++) {
@@ -768,6 +794,12 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 						List<String> horizontal = paramsType.get("horizontal");
 						for (int i = 0; i < horizontal.size(); i++) {
 							configureBuilder.bind(horizontal.get(i), horizontalPolicy);
+						}
+						break;
+					case "group":
+						List<String> group = paramsType.get("group");
+						for (int i = 0; i < group.size(); i++) {
+							configureBuilder.bind(group.get(i), new ServerTablePolicy());
 						}
 						break;
 					default:
@@ -1321,6 +1353,18 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 				}else {
 					return null;
 				}
+			}else if(datasetName.toLowerCase().endsWith("_g")){
+				List<String> group = paramsType.get("group");
+				if(group == null) {
+					group = new ArrayList<>();
+					paramsType.put("group", group);
+				}
+				group.add(datasetName);
+				if(ListUtil.isNotEmpty(datas)) {
+					return this.getServerTableData(datas);	
+				}else {
+					return null;
+				}
 			}else {
 				if(ListUtil.isNotEmpty(datas)) {
 					return datas.get(0);	
@@ -1351,6 +1395,14 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 					}
 					horizontal.add(datasetName);
 					return datas;
+				}else if(datasetName.toLowerCase().endsWith("_g")){
+					List<String> group = paramsType.get("group");
+					if(group == null) {
+						group = new ArrayList<>();
+						paramsType.put("group", group);
+					}
+					group.add(datasetName);
+					return this.getServerTableData(datas);	
 				}else {
 					List<String> vertical = paramsType.get("vertical");
 					if(vertical == null) {
@@ -1385,6 +1437,36 @@ public class DocTplServiceImpl extends ServiceImpl<DocTplMapper, DocTpl> impleme
 			}
 		}
 	}
+	
+	 private ServerTableData getServerTableData(List<Map<String, Object>> datas) {
+		 ServerTableData serverTableData = new ServerTableData();
+		 serverTableData.setGroupDataList(datas);
+		 List<RowRenderData> serverDataList = new ArrayList<>();
+		 Map<Integer, List<WordTableMerge>> mergeInfos = new LinkedHashMap<>();
+		 if(ListUtil.isNotEmpty(datas)) {
+			 Map<String, Object> firstObj = datas.get(0);
+			// 获取Map的所有key
+			 List<String> keys = new ArrayList<>(firstObj.keySet());
+			 List<List<Map<String, Object>>> groupDatas = ListUtil.groupDatas(datas, keys,mergeInfos);
+			 RowRenderData serverData = null;
+			 Map<String, Object> data = null;
+			 List<String> values = null;
+			 for (int i = 0; i < groupDatas.size(); i++) {
+				for (int j = 0; j < groupDatas.get(i).size(); j++) {
+					data = groupDatas.get(i).get(j);
+					values = new ArrayList<String>();
+					for (String key : data.keySet()) {
+						values.add(String.valueOf(data.get(key)));
+					}
+					serverData = Rows.of(values.toArray(new String[0])).center().create();
+					serverDataList.add(serverData);
+				}
+			}
+		 }
+		 serverTableData.setServerDataList(serverDataList);
+		 serverTableData.setMergeInfos(mergeInfos);
+		 return serverTableData;
+	 }
 
 
 	/**  

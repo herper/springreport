@@ -1033,12 +1033,12 @@ commonUtil.chartProcess = function(component){
                     component.spec.indicator.title.field = null;
                     component.spec.indicator.content.field = null;
                     component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
-                    component.spec.indicator.content.style.text = (component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100)+"%";
+                    component.spec.indicator.content.style.text = (component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100).toFixed(2)+"%";
                 }else{
                     component.spec.indicator.title.field = component.spec.valueField;
                     component.spec.indicator.content.field = component.spec.seriesField?component.spec.seriesField:component.spec.categoryField;
                     component.spec.indicator.title.style.text = component.spec.seriesField?component.spec.data.values[0][component.spec.seriesField]:component.spec.data.values[0][component.spec.categoryField];
-                    component.spec.indicator.content.style.text = (component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100)+"%";
+                    component.spec.indicator.content.style.text = (component.spec.valueTextField?component.spec.data.values[0][component.spec.valueTextField]:component.spec.data.values[0][component.spec.valueField]*100).toFixed(2)+"%";
                 }
             }
         }
@@ -1252,6 +1252,19 @@ commonUtil.getComponentParams = function(componentParams)
     }
     return result;
 }
+
+commonUtil.getChartsComponentsParams = function(chartsComponents)
+{
+    var result = {};
+    if(chartsComponents){
+        for (let index = 0; index < chartsComponents.length; index++) {
+            const element = chartsComponents[index];
+            let params = commonUtil.getComponentParams(element.params)
+            result = Object.assign(result, params)
+        }
+    }
+    return result;
+}
 commonUtil.mapCodes = {}
 //地图下钻
 commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest,that){
@@ -1266,7 +1279,7 @@ commonUtil.mapDrill = async function(chartsComponents,component,data,sendRequest
         let name = data.datum.properties.name;
         if(component.drillType == '2'){
             if(component.drillLink){
-                let url = commonUtil.buildUrlWithParams(component.drillLink,{adcode:adcode});
+                let url = commonUtil.buildUrlWithParams(component.drillLink,{mapCode:adcode});
                 window.open(url,'_blank')
             }
         }else{
