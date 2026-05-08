@@ -994,4 +994,21 @@ selectUtil.sheetLoopType = [
   { value: 1, label: '自定义' },
   { value: 2, label: 'SQL语句' }
 ]
+
+selectUtil.componentSize = [
+  { value: 'large', label: 'large' },
+  { value: 'medium', label: 'medium' },
+  { value: 'small', label: 'small' },
+  { value: 'mini', label: 'mini' },
+]
+
+selectUtil.triggerTiming = [
+  { value: '1', label: '按钮点击触发' },
+  { value: '2', label: '修改后触发' },
+]
+
+selectUtil.dataType = [
+  { value: '1', label: '自定义' },
+  { value: '2', label: 'SQL语句' }
+]
 export default selectUtil

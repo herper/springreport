@@ -190,6 +190,10 @@ export default {
       type: Array,
       default: () => []
     },
+    formsParams: {
+      type: Object,
+      default: () => ({})
+    },
   },
   mounted() {
     this.initData(this.searchParams);
@@ -219,7 +223,7 @@ export default {
       var componentParams = this.commonUtil.getComponentParams(
         component.params
       );
-      params.params = Object.assign({}, componentParams, pageParams);
+      params.params = Object.assign({}, componentParams, pageParams,this.formsParams);
       let obj = {
         url: this.apis.screenDesign.getDynamicDatasApi,
         params: params,

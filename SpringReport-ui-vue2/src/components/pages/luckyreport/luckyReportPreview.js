@@ -285,6 +285,7 @@ export default {
       setTimeout(function() {
         that.updateNowFunction()
         that.updateCellFormat()
+        luckysheet.forceExecFunc();
       }, 100)
       if (this.sheetPagination[index]) {
         var pager = {
