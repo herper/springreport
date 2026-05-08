@@ -3,6 +3,7 @@
  */
 package com.springreport.controller.screentpl;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -161,13 +162,14 @@ public class ScreenTplController extends BaseController {
 	 * @param screenTpl
 	 * @return
 	 * @author caiyang
+	 * @throws ParseException 
 	 * @date 2021-08-02 11:38:22 
 	 */ 
 	@RequestMapping(value = "/getScreenDesign",method = RequestMethod.POST)
 	@MethodLog(module="ScreenTpl",remark="获取大屏设计详情",operateType=Constants.OPERATE_TYPE_SEARCH)
 	@Check({"id:required#主键ID"})
 	@RequiresPermissions(value = {"screenTpl_screenDesign","screenTpl_previewDesign","screenTpl_viewScreen","multiScreen_preview","multiScreen_view","screenTemplate_design","multi_view"},logical = Logical.OR)
-	public Response getScreenDesign(@RequestBody ScreenTpl screenTpl,@LoginUser UserInfoDto userInfoDto)
+	public Response getScreenDesign(@RequestBody ScreenTpl screenTpl,@LoginUser UserInfoDto userInfoDto) throws Exception
 	{
 		ScreenTplDto result = this.iScreenTplService.getScreenDesign(screenTpl);
 		return Response.success(result);

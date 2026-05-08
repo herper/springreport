@@ -1,4 +1,5 @@
 package com.springreport.api.screentpl;
+import java.text.ParseException;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.springreport.entity.reporttype.ReportType;
@@ -82,9 +83,10 @@ public interface IScreenTplService extends IService<ScreenTpl> {
 	 * @param screenTpl
 	 * @return
 	 * @author caiyang
+	 * @throws ParseException 
 	 * @date 2021-08-02 11:39:06 
 	 */ 
-	ScreenTplDto getScreenDesign(ScreenTpl screenTpl);
+	ScreenTplDto getScreenDesign(ScreenTpl screenTpl) throws Exception;
 	
 	/**  
 	 * @Title: saveScreenDesign

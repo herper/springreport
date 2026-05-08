@@ -1053,7 +1053,7 @@ public class LuckysheetUtil {
 		String value = wrapData.getString("value");
 		short fs = wrapData.getShortValue("fs");
 		java.awt.Font font = new java.awt.Font("微软雅黑", 0, fs);
-		int width = (int) font.getStringBounds(value, frc).getWidth();
+		int width = (int) Math.ceil(font.getStringBounds(value, frc).getWidth())+10;
 		java.awt.Rectangle rec = font.getStringBounds("田", frc).getBounds();
 		double collen = LuckysheetUtil.calculateWidth(columnlen, stc, edc-stc+1);
 		double rows = Math.ceil(width/collen);
