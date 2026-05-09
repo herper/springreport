@@ -82,7 +82,7 @@ public class LuckySheetCrossAggregate extends Aggregate<LuckysheetReportCell,Luc
 						        	extraParams.put("viewParams", null);
 						        	luckySheetBindData = new LuckySheetBindData();
 						        	List<List<Map<String, Object>>> groupdatas = new ArrayList<List<Map<String,Object>>>();
-						        	groupdatas.add(allGroupDatas);
+						        	groupdatas.add(mapDatas.get(categories.get(j)));
 						        	luckySheetBindData.setDatas(groupdatas);
 						        	String methodName = formulas.getJSONObject(k).getString("methodName");
 						        	String attr = formulas.getJSONObject(k).getString("params");

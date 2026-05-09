@@ -81,6 +81,7 @@ import org.jfree.data.general.PieDataset;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCfRule;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.STCfType;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.springreport.base.CellValueDto;
@@ -1450,7 +1451,7 @@ public class ReportExcelUtil {
         	for(Map.Entry<String, Object> entry : map.entrySet()) {
         		
         		 //图片信息
-                JSONObject iamgeData = (JSONObject) entry.getValue();
+                JSONObject iamgeData = JSONObject.parseObject(JSON.toJSONString(entry.getValue()));
                 Integer zIndex = iamgeData.getInteger("zIndex");
                 if(zIndex == null) {
                 	zIndex = 0;
