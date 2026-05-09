@@ -906,7 +906,7 @@
               </el-collapse-item>
               
               <el-collapse-item title="填报配置" name="fillSettings" v-if="tplType != 1">
-                <el-form-item
+                <!-- <el-form-item
                   label="打印/导出隐藏列"
                   class="df-form-item"
                 >
@@ -917,7 +917,7 @@
                     :disabled="attrDisabled"
                     @change="changeCellAttr('isOperationCol','formsAttrs')"
                   />
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item
                   label="允许修改"
                   class="df-form-item"
@@ -1503,17 +1503,6 @@
                 </el-collapse>
               </el-collapse-item>
               <el-collapse-item title="PDF/打印配置" name="pdfConfig">
-                    <!-- <div class="df" style="padding: 8px 0 12px 0">
-                  <span
-                    class="cell-label"
-                  >行后分页</span>
-                  <el-switch
-                    v-model="cellForm.forcePagebreak"
-                    active-text="是"
-                    inactive-text="否"
-                    @change="changeCellAttr('forcePagebreak')"
-                  />
-                </div> -->
                 <div class="df-c" style="padding: 8px 0 12px 0">
                   <span class="cell-label" style="line-height: 20px">行后分页</span>
                   <el-switch
@@ -1521,6 +1510,18 @@
                     active-text="是"
                     inactive-text="否"
                     @change="changeCellAttr('forcePagebreak')"
+                  />
+                </div>
+                <div class="df-c" style="padding: 8px 0 12px 0">
+                  <span
+                    class="cell-label"
+                    style="line-height: 20px"
+                  >打印/导出隐藏列</span>
+                  <el-switch
+                    v-model="cellForm.isOperationCol"
+                    active-text="是"
+                    inactive-text="否"
+                    @change="changeCellAttr('isOperationCol')"
                   />
                 </div>
               </el-collapse-item>
