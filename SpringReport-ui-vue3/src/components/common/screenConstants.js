@@ -205,6 +205,14 @@ screenConstants.type = {
     cardList: 'cardList',// 卡片列表
     tabsCard:'tabsCard',//tabs选项卡
     tableMap:'tableMap',//地图表格
+    formsDate:'formsDate',//表单日期
+    formsDateRange:'formsDateRange',//表单日期范围
+    formsSelect:'formsSelect',//表单下拉单选
+    formsMultiselect:'formsMultiselect',//表单下拉多选
+    formsTreeselect:'formsTreeselect',//表单下拉树单选
+    formsMultitree:'formsMultitree',//表单下拉树多选
+    formsCascader:'formsCascader',//表单级联选择
+    formsButton:'formsButton',//表单按钮
 }
 
 screenConstants.category = {
@@ -219,6 +227,7 @@ screenConstants.category = {
    cardList:'cardList',//卡片列表
    tabsCard:'tabsCard',//选项卡
    tableMap:'tableMap',//地图表格
+   forms:'forms',//form表单组件
 }
 
 //大屏组件类型
@@ -247,7 +256,8 @@ screenConstants.componentsType1 = [
   { 'type': 'comboChart', 'text': '组合图', icon: 'comboChart' },
   { 'type': 'map', 'text': '地图', icon: 'map' },
   { 'type': 'table', 'text': '表格', icon: 'table' },
-  { 'type': 'tabsCard', 'text': '选项卡', icon: 'table' }
+  { 'type': 'tabsCard', 'text': '选项卡', icon: 'tabsCard' },
+  { 'type': 'forms', 'text': '表单', icon: 'forms' },
 ]
 screenConstants.componentsType2 = [
 
@@ -306,6 +316,7 @@ screenConstants.compType = {
     cardList: { text: '卡片列表', icon: 'cardList' },
     tabsCard: { text: '选项卡', icon: 'tabsCard' },
     tableMap: { text: '地图表格', icon: 'tableMap' },
+    forms: { text: '表单', icon: 'tableMap' },
 }
 
 screenConstants.textType = [
@@ -451,6 +462,17 @@ screenConstants.comboChartType = [
 
 screenConstants.tabsCardType = [
   { 'name': 'tabsCard', 'text': '选项卡', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/tabsCard.png', category: screenConstants.category.tabsCard },
+]
+
+screenConstants.formsType = [
+  { 'name': 'formsDate', 'text': '日期时间', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formstime.png', category: screenConstants.category.forms },
+  { 'name': 'formsDateRange', 'text': '日期范围', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formstimerange.png', category: screenConstants.category.forms },
+  { 'name': 'formsSelect', 'text': '下拉单选', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formsselect.png', category: screenConstants.category.forms },
+  { 'name': 'formsMultiselect', 'text': '下拉多选', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formsmultiselect.png', category: screenConstants.category.forms },
+  { 'name': 'formsTreeselect', 'text': '下拉树单选', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formstree.png', category: screenConstants.category.forms },
+  { 'name': 'formsMultitree', 'text': '下拉树多选', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formstree.png', category: screenConstants.category.forms },
+  { 'name': 'formsCascader', 'text': '级联选择', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formscascader.png', category: screenConstants.category.forms },
+  { 'name': 'formsButton', 'text': '按钮', 'src': import.meta.env.VITE_BASE_URL_PREFIX+'/images/chart/formsbutton.png', category: screenConstants.category.forms },
 ]
 
 screenConstants.chartTitleSettings={
@@ -5654,6 +5676,249 @@ screenConstants.tableMapInit = {
       }
 
   }
+}
+
+screenConstants.formsDateInit = {
+  type: screenConstants.type.formsDate,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  dateFormat:"YYYY-MM-DD",//日期格式
+  paramDefault:"",//默认值
+  paramValue:'',//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsDateRangeInit = {
+  type: screenConstants.type.formsDateRange,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  dateFormat:"YYYY-MM-DD",//日期格式
+  paramDefaultStart:"",//开始时间默认值
+  paramDefaultEnd:"",//结束时间默认值
+  paramValue:[],//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsSelectInit = {
+  type: screenConstants.type.formsSelect,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:"",//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  selectContent:[],
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsMultiselectInit = {
+  type: screenConstants.type.formsMultiselect,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:[],//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  selectContent:[],
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsMultiselectInit = {
+  type: screenConstants.type.formsMultiselect,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:[],//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  selectContent:[],
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsTreeselectInit = {
+  type: screenConstants.type.formsTreeselect,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:"",//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  selectContent:[],
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsMultitreeInit = {
+  type: screenConstants.type.formsMultitree,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:"",//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"1",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  selectContent:[],
+  checkStrictly:false,
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsCascaderInit = {
+  type: screenConstants.type.formsCascader,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:"",//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"2",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
+  level:3,//级联层数
+  selectContent:[],
+  checkStrictly:false,
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsButtonInit = {
+  type: screenConstants.type.formsButton,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  width:280,
+  btnText:"查询",//按钮文本
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large",btnColor:'',fontColor:''
+  },
 }
 
 screenConstants.map=[

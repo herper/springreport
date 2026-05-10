@@ -9,6 +9,7 @@ import numberFlipperComponent from './draggablecomponent/numberFlipperComponent.
 import cardListComponent from './draggablecomponent/cardListComponent.vue'
 import tabsCardComponent from './draggablecomponent/tabsCardComponent.vue'
 import tableMapComponent from './draggablecomponent/tableMapComponnet.vue'
+import formsComponent from './draggablecomponent/formsComponent.vue'
 export default {
   components: {
     textComponent,
@@ -19,7 +20,8 @@ export default {
     numberFlipperComponent,
     cardListComponent,
     tabsCardComponent,
-    tableMapComponent
+    tableMapComponent,
+    formsComponent
   },
   props: {
     components: {
@@ -64,6 +66,10 @@ export default {
     searchParams: {
       type: Array,
       default: () => []
+    },
+    formsParams: {
+      type: Object,
+      default: () => ({})
     },
   },
   data() {

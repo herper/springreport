@@ -35,6 +35,8 @@ export default {
         offsetY: 0,
       },
       components: [], //组件
+      formsComponents:[],//表单组件
+      formsParams:{},//表单参数
       chartsComponents: {}, //图表 key id，value：charts
       sendRequest: false,
       scaleTimer: null,
@@ -118,6 +120,22 @@ export default {
               const component = JSON.parse(element.content);
               component.locked = true;
               tempComponent.push(component)
+              let type = component.type
+              if(type == "formsDate" || type == "formsDateRange" || type == "formsSelect" || type == "formsMultiselect" || type == "formsTreeselect" || type == "formsMultitree" || type == "formsCascader"){
+                let paramCode = component.paramCode;
+                if (that.$route.query[paramCode]) {
+                  if(type == "formsDateRange" || type == "formsMultiselect" || type == "formsMultitree" || type == "formsCascader"){
+                    component.paramValue = that.$route.query[paramCode].split(',')
+                  }else{
+                    component.paramValue = that.$route.query[paramCode]
+                  }
+                }
+                let paramValue = component.paramValue;
+                if(!that.formsParams[paramCode]){
+                  that.formsParams[paramCode] = paramValue
+                }
+                that.formsComponents.push(component)
+              }
                if(component.category == this.screenConstants.category.tabsCard){
                 //选项卡组件则将选项卡绑定的所有子组件参数先组装放到component.params里面
                 if(component.tabs && component.tabs.length > 0){
@@ -315,6 +333,7 @@ export default {
       this.drawer = false;
     },
     refreshComponentData(){
+      this.getFormsParams();
       for (let index = 0; index < this.components.length; index++) {
         const element = this.components[index];
         if(element.type != "picture"){
@@ -426,6 +445,16 @@ export default {
       } else {
         item.selectData = []
         modelData[item.paramCode] = null
+      }
+    },
+    getFormsParams(){
+      if(this.formsComponents && this.formsComponents.length > 0){
+        for (let index = 0; index < this.formsComponents.length; index++) {
+          const component = this.formsComponents[index];
+          let paramCode = component.paramCode;
+          let paramValue = component.paramValue;
+          this.formsParams[paramCode] = paramValue
+        }
       }
     },
   },

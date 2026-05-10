@@ -24,6 +24,7 @@
         :view-that="viewThat"
         :myclass="'myclass'"
         :searchParams="(searchData.params && searchData.params.length>0)?searchData.params[0].params:[]"
+        :formsParams="formsParams"
       />
     </div>
     <div style="width: 100%; flex: none">

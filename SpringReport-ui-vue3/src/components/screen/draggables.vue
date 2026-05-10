@@ -55,6 +55,7 @@
           :sendRequest="sendRequest"
           :ref="item.id"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         ></text-component>
       </div>
       <div
@@ -67,6 +68,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -99,6 +101,7 @@
           :chartsComponents="chartsComponents"
           :ref="item.id"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         ></table-component>
       </div>
       <div
@@ -113,6 +116,7 @@
           :ref="item.id"
           :view-that="viewThat"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         ></vchart-component>
       </div>
       <div
@@ -125,6 +129,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -137,6 +142,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
        <div
@@ -151,6 +157,20 @@
           :send-request="sendRequest"
           :searchParams="searchParams"
           :view-that="viewThat"
+          :formsParams="formsParams"
+        />
+      </div>
+      <div
+        v-if="item.category == screenConstants.category.forms && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+      <forms-component
+        :ref="item.id"
+        :style="{ height: item.h + 'px', width: item.w + 'px' }"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+          :searchParams="searchParams"
         />
       </div>
     </Vue3DraggableResizable>
