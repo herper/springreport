@@ -1729,6 +1729,12 @@
                       class="switch-tag"
                       style="min-width: 220px; max-width: 220px;margin: 0"
                     >
+                      跟随单元格移动：<el-switch v-model="o.isMove" size="mini"/>
+                    </p>
+                    <p
+                      class="switch-tag"
+                      style="min-width: 220px; max-width: 220px;margin: 0"
+                    >
                       打印层级：
                       <el-input
                         v-model="o.zIndex"
