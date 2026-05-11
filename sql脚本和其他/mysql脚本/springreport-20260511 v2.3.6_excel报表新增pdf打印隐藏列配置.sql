@@ -1,0 +1,1 @@
+ALTER TABLE luckysheet_report_cell ADD COLUMN is_operation_col bit(1) DEFAULT b'0' COMMENT '打印/导出是否隐藏列'; 

@@ -2547,4 +2547,43 @@ commonUtil.isDate = function(str){
     return !isNaN(date.getTime());
 }
 
+commonUtil.arrayToTree = function(items, config = {}) {
+  const {
+    parentKey = 'pid',
+    idKey = 'id',
+    childrenKey = 'children'
+  } = config;
+
+  const map = new Map();
+  const roots = [];
+
+  // 建立 id -> node 的映射，并初始化 children 数组
+  for (const item of items) {
+    const node = { ...item };          // 浅拷贝原对象
+    node[childrenKey] = [];             // 统一准备 children 容器
+    map.set(node[idKey], node);
+  }
+
+  // 组装父子关系
+  for (const item of items) {
+    const node = map.get(item[idKey]);
+    const parentId = item[parentKey];
+
+    if (parentId == null || parentId === '') {
+      // 没有 parentId 或为 null/undefined/空字符串 -> 根节点
+      roots.push(node);
+    } else {
+      const parent = map.get(parentId);
+      if (parent) {
+        parent[childrenKey].push(node);
+      } else {
+        // 如果父节点不存在（数据不完整），可选处理：作为根节点
+        roots.push(node);
+      }
+    }
+  }
+
+  // 如果没有根元素（所有节点都有父节点且存在），通常需要根据实际情况调整
+  return roots;
+}
 export default commonUtil;

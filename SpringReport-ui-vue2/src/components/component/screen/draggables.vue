@@ -35,6 +35,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -47,6 +48,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -85,6 +87,7 @@
           :send-request="sendRequest"
           :charts-components="chartsComponents"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -101,6 +104,7 @@
           :charts-components="chartsComponents"
           :view-that="viewThat"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -113,6 +117,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
        <div
@@ -125,6 +130,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -132,6 +138,21 @@
         @contextmenu.prevent="onContextmenu($event, item)"
       >
       <table-map-component
+        :ref="item.id"
+        :style="{ height: item.h + 'px', width: item.w + 'px' }"
+          :component="item"
+          :charts-components="chartsComponents"
+          :send-request="sendRequest"
+          :searchParams="searchParams"
+          :view-that="viewThat"
+          :formsParams="formsParams"
+        />
+      </div>
+      <div
+        v-if="item.category == screenConstants.category.forms && !item.isDelete"
+        @contextmenu.prevent="onContextmenu($event, item)"
+      >
+      <forms-component
         :ref="item.id"
         :style="{ height: item.h + 'px', width: item.w + 'px' }"
           :component="item"
