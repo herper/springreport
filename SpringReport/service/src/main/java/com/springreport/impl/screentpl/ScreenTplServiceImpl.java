@@ -539,6 +539,9 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 			}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
 			{
 				dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
+			}else if("YYYY-MM-DD HH:mm:ss".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_FULL;
 			}else if("YYYY".equals(dateFormat))
 			{
 				dateFormat = DateUtil.FORMAT_YEAR;
