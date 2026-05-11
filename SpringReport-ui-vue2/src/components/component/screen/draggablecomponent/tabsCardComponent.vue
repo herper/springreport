@@ -16,6 +16,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -27,6 +28,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       <div
@@ -47,6 +49,7 @@
           :send-request="sendRequest"
           :charts-components="chartsComponents"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
         <div
@@ -61,6 +64,7 @@
           :send-request="sendRequest"
           :charts-components="chartsComponents"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
         </div>
         <div
@@ -72,6 +76,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
       </el-tab-pane>
@@ -113,6 +118,10 @@ export default {
     searchParams: {
       type: Array,
       default: () => []
+    },
+    formsParams: {
+      type: Object,
+      default: () => ({})
     },
   },
   mounted() {
@@ -159,7 +168,7 @@ export default {
       var componentParams = this.commonUtil.getComponentParams(
         component.params
       );
-      params.params = Object.assign({}, componentParams, pageParams);
+      params.params = Object.assign({}, componentParams, pageParams,this.formsParams);
       let obj = {
         url: this.apis.screenDesign.getDynamicDatasApi,
         params: params,

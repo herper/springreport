@@ -352,6 +352,7 @@ export default {
         isDump:false,
         forcePagebreak:false,
         enableCollapse:false,
+        isOperationCol:false,//打印/导出是否隐藏列
         formsAttrs:{
           isOperationCol:false,//是否操作列
           valueType: '1', // 值类型 1文本 2数值 3日期 4下拉单选
@@ -970,6 +971,7 @@ export default {
         this.cellForm.keepEmptyCell = cellFormData.keepEmptyCell
         this.cellForm.forcePagebreak = cellFormData.forcePagebreak
         this.cellForm.enableCollapse = cellFormData.enableCollapse
+        this.cellForm.isOperationCol = cellFormData.isOperationCol
         if(cellFormData.cellFillType){
           this.cellForm.cellFillType = cellFormData.cellFillType
         }else{
@@ -1040,6 +1042,7 @@ export default {
         this.cellForm.keepEmptyCell = false
         this.cellForm.forcePagebreak = false
         this.cellForm.enableCollapse = false
+        this.cellForm.isOperationCol = false
         // this.getDrillReport();
       }
       if (this.cellForm.datasourceId) {
@@ -2182,6 +2185,7 @@ export default {
             configs.extraCustomCellConfigs = extraCustomCellConfigs
             configs.sheetLoopData = this.sheetLoop[luckysheetfile.index]
             var chartCells = this.getChartCells(luckysheetfile)
+            this.processMovedImages(luckysheetfile);
             var checkResult = this.checkChartFirstCellIsUsed(chartCells, cellDatas)
             if (checkResult) {
               this.loading = false
@@ -5765,6 +5769,83 @@ export default {
       //保存当前sheet页的模板
       saveCurrentSheetTpl(){
         this.saveTpl(true);
+      },
+      processMovedImages(luckysheetfile){
+        if(luckysheetfile.images){
+          var columnlen = luckysheetfile.config.columnlen
+          var rowlen = luckysheetfile.config.rowlen
+          for(var key in luckysheetfile.images) {
+            if(luckysheetfile.images[key].isMove){
+              let left = 0
+              let leftEnd = 0
+              let top = 0
+              let topEnd = 0
+              const element = luckysheetfile.images[key]
+              const chartLeft = element.default.left
+              const chartLeftEnd = element.default.left + element.default.width
+              const chartTop = element.default.top
+              const chartTopEnd = element.default.top + element.default.height
+              const cellLeft = 0// 距离单元格左侧的距离
+              const cellTop = 0// 距离单元格上方的距离
+              const temp = 0
+              let y = 0
+              while (left < chartLeft) {
+                if (columnlen && columnlen[(y + '')]) {
+                  left = left + columnlen[(y + '')] * 1
+                } else {
+                  left = left + 73
+                }
+                if (left < chartLeft) {
+                  y = y + 1
+                  // cellLeft = chartLeft - temp;
+                  // temp = 0;
+                }
+                left = left + 1
+                // else{
+                //   temp = left;
+                // }
+              }
+              let yend = 0
+              while (leftEnd < chartLeftEnd) {
+                if (columnlen && columnlen[(yend + '')]) {
+                  leftEnd = leftEnd + columnlen[(yend + '')] * 1
+                } else {
+                  leftEnd = leftEnd + 73
+                }
+                if (leftEnd < chartLeftEnd) {
+                  yend = yend + 1
+                }
+                leftEnd = leftEnd + 1
+              }
+              let x = 0
+              while (top < chartTop) {
+                if (rowlen && rowlen[(x + '')]) {
+                  top = top + rowlen[(x + '')] * 1
+                } else {
+                  top = top + 19
+                }
+                if (top < chartTop) {
+                  x = x + 1
+                }
+                top = top + 1
+              }
+              let xend = 0
+              while (topEnd < chartTopEnd) {
+                if (rowlen && rowlen[(xend + '')]) {
+                  topEnd = topEnd + rowlen[(xend + '')] * 1
+                } else {
+                  topEnd = topEnd + 19
+                }
+                if (topEnd < chartTopEnd) {
+                  xend = xend + 1
+                }
+                topEnd = topEnd + 1
+              }
+              element.r = x;
+              element.c = y;
+            }
+          }
+        }
       }
   },
   watch: {

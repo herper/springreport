@@ -6,12 +6,14 @@ import com.springreport.entity.screentpl.ScreenTpl;
 import com.springreport.entity.sysuser.SysUser;
 import com.springreport.mapper.screencontent.ScreenContentMapper;
 import com.springreport.mapper.screentpl.ScreenTplMapper;
+import com.springreport.api.reporttpldataset.IReportTplDatasetService;
 import com.springreport.api.reporttpldatasource.IReportTplDatasourceService;
 import com.springreport.api.reporttype.IReportTypeService;
 import com.springreport.api.screencontent.IScreenContentService;
 import com.springreport.api.screentpl.IScreenTplService;
 import com.springreport.api.sysuser.ISysUserService;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.springreport.util.CheckUtil;
 import com.springreport.util.DateUtil;
 import com.springreport.util.JWTUtil;
 import com.springreport.util.ListUtil;
@@ -35,17 +38,26 @@ import com.github.pagehelper.PageHelper;
 import com.springreport.base.BaseEntity;
 import com.springreport.base.PageEntity;
 import com.springreport.base.UserInfoDto;
+import com.springreport.constants.Constants;
 import com.springreport.constants.StatusCode;
 import com.springreport.dto.reporttpl.ShareDto;
+import com.springreport.dto.reporttpldataset.MesGetRelyOnSelectData;
+import com.springreport.dto.reporttpldataset.ReportParamDto;
 import com.springreport.dto.screentpl.MesScreenTplDto;
 import com.springreport.dto.screentpl.SaveScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplDto;
 import com.springreport.dto.screentpl.ScreenTplTreeDto;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.transaction.annotation.Transactional;
 
+import com.springreport.enums.DefaultDateTypeEnum;
 import com.springreport.enums.DelFlagEnum;
 import com.springreport.enums.YesNoEnum;
 import com.springreport.exception.BizException;
@@ -73,6 +85,9 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	
 	@Autowired
 	private IReportTypeService iReportTypeService;
+	
+	@Autowired
+	private IReportTplDatasetService iReportTplDatasetService;
 	
 	@Autowired
 	private ISysUserService iSysUserService;
@@ -335,10 +350,11 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 	 * @return 
 	 * @see com.caiyang.api.screentpl.IScreenTplService#getScreenDesign(com.caiyang.entity.screentpl.ScreenTpl) 
 	 * @author caiyang
+	 * @throws ParseException 
 	 * @date 2021-08-02 11:40:00 
 	 */
 	@Override
-	public ScreenTplDto getScreenDesign(ScreenTpl screenTpl) {
+	public ScreenTplDto getScreenDesign(ScreenTpl screenTpl) throws Exception {
 		ScreenTplDto result = new ScreenTplDto();
 		//获取大屏模板
 		screenTpl = this.getById(screenTpl.getId());
@@ -352,8 +368,272 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		queryWrapper.eq("tpl_id", screenTpl.getId());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ScreenContent> components = this.iScreenContentService.list(queryWrapper);
+		if(ListUtil.isNotEmpty(components)) {
+			JSONObject content = null;
+			ReportParamDto reportParamDto = null;
+			for (int i = 0; i < components.size(); i++) {
+				content = JSON.parseObject(components.get(i).getContent());
+				String type = content.getString("type");
+				if("formsDate".equals(type)) {
+					//日期类型
+					reportParamDto = new ReportParamDto();
+					reportParamDto.setParamCode(content.getString("paramCode"));
+					reportParamDto.setDateFormat(content.getString("dateFormat"));
+					reportParamDto.setParamDefault(content.getString("paramDefault"));
+					this.processDateParam(reportParamDto);
+					content.put("paramValue", reportParamDto.getParamDefault());
+					
+				}else if("formsDateRange".equals(type)) {
+					//日期范围类型
+					JSONArray paramValue = new JSONArray();
+					String paramDefaultStart = content.getString("paramDefaultStart");
+					String paramDefaultEnd = content.getString("paramDefaultEnd");
+					if(StringUtil.isNotEmpty(paramDefaultStart)) {
+						reportParamDto = new ReportParamDto();
+						reportParamDto.setParamCode(content.getString("paramCode"));
+						reportParamDto.setDateFormat(content.getString("dateFormat"));
+						reportParamDto.setParamDefault(content.getString("paramDefaultStart"));
+						this.processDateParam(reportParamDto);
+						paramValue.add(reportParamDto.getParamDefault());
+					}else {
+						paramValue.add("");
+					}
+					if(StringUtil.isNotEmpty(paramDefaultEnd)) {
+						reportParamDto = new ReportParamDto();
+						reportParamDto.setParamCode(content.getString("paramCode"));
+						reportParamDto.setDateFormat(content.getString("dateFormat"));
+						reportParamDto.setParamDefault(content.getString("paramDefaultEnd"));
+						this.processDateParam(reportParamDto);
+						paramValue.add(reportParamDto.getParamDefault());
+					}else {
+						paramValue.add("");
+					}
+					content.put("paramValue", paramValue);
+				}else if("formsSelect".equals(type) || "formsMultiselect".equals(type)) {
+					//下拉单选或者下拉多选
+					String dataType = content.getString("dataType");
+					String dataContent = content.getString("dataContent");
+					if("2".equals(dataType)) {
+						//sql语句
+						Long datasourceId = content.getLong("datasourceId");
+						if(datasourceId != null && StringUtil.isNotEmpty(dataContent)) {
+							MesGetRelyOnSelectData mesGetRelyOnSelectData = new MesGetRelyOnSelectData(); 
+							mesGetRelyOnSelectData.setDatasourceId(datasourceId);
+							mesGetRelyOnSelectData.setSelectContent(dataContent);
+							List<Map<String, Object>> datas = this.iReportTplDatasetService.getSelectData(mesGetRelyOnSelectData);
+							content.put("selectContent", datas);
+						}else {
+							content.put("dataContent", "");
+							content.put("selectContent", new ArrayList());
+						}
+					}else {
+						if(StringUtil.isNotEmpty(dataContent)) {
+							content.put("selectContent", JSON.parseArray(dataContent));
+						}
+					}
+					String paramDefault = content.getString("paramDefault");
+					if(StringUtil.isNotEmpty(paramDefault)) {
+						if("formsSelect".equals(type)) {
+							content.put("paramValue", paramDefault);
+						}else if("formsMultiselect".equals(type)) {
+							String[] paramDefaults = paramDefault.split(",");
+	 						content.put("paramValue", paramDefaults);
+						}
+					}else {
+						if("formsSelect".equals(type)) {
+							content.put("paramValue", "");
+						}else if("formsMultiselect".equals(type)) {
+	 						content.put("paramValue", new ArrayList());
+						}
+					}
+				}else if("formsTreeselect".equals(type) || "formsMultitree".equals(type)) {
+					//下拉单选或者下拉多选
+					String dataType = content.getString("dataType");
+					String dataContent = content.getString("dataContent");
+					if("2".equals(dataType)) {
+						//sql语句
+						Long datasourceId = content.getLong("datasourceId");
+						if(datasourceId != null && StringUtil.isNotEmpty(dataContent)) {
+							MesGetRelyOnSelectData mesGetRelyOnSelectData = new MesGetRelyOnSelectData(); 
+							mesGetRelyOnSelectData.setDatasourceId(datasourceId);
+							mesGetRelyOnSelectData.setSelectContent(dataContent);
+							List<Map<String, Object>> datas = this.iReportTplDatasetService.getTreeSelectData(mesGetRelyOnSelectData);
+							content.put("selectContent", datas);
+						}else {
+							content.put("dataContent", "");
+							content.put("selectContent", new ArrayList());
+						}
+					}else {
+						List<Map> resultList = new ArrayList<Map>();
+						if(StringUtil.isNotEmpty(dataContent)) {
+							List<Map> list = JSON.parseArray(dataContent,Map.class);
+							if(!ListUtil.isEmpty(list)) {
+								Map<String, Map<String, Object>> entityMap = new HashMap<>();
+								Map<String, List<Map<String, Object>>> childrenMap = new HashMap<>();
+								for (Map<String, Object> entity : list){
+									entity.put("value", String.valueOf(entity.get("id")));
+									entity.put("children", new ArrayList<>());
+									entityMap.put(String.valueOf(entity.get("id")),entity);
+									childrenMap.put(String.valueOf(entity.get("id")), (List<Map<String, Object>>) entity.get("children"));
+								}
+								// 组装成数结构列表
+								for (Map<String, Object> entity : list){
+									Map<String, Object> parentEntity = entityMap.get(String.valueOf(entity.get("pid")));
+									if(parentEntity == null)
+									{
+										// 将顶级节点加入结果集中
+								         resultList.add(entity);
+								         continue;
+									}
+									// 把自己加到父节点对象里面去
+									childrenMap.get(String.valueOf(parentEntity.get("id"))).add(entity);
+								}
+							}
+						}
+						content.put("selectContent", resultList);
+					}
+					String paramDefault = content.getString("paramDefault");
+					if(StringUtil.isNotEmpty(paramDefault)) {
+						if("formsTreeselect".equals(type)) {
+							content.put("paramValue", paramDefault);
+						}else if("formsMultitree".equals(type)) {
+							String[] paramDefaults = paramDefault.split(",");
+	 						content.put("paramValue", paramDefaults);
+						}
+					}else {
+						if("formsTreeselect".equals(type)) {
+							content.put("paramValue", "");
+						}else if("formsMultitree".equals(type)) {
+	 						content.put("paramValue", new ArrayList());
+						}
+					}
+				}else if("formsCascader".equals(type)) {
+					//级联选择
+					String paramDefault = content.getString("paramDefault");
+					if(StringUtil.isNotEmpty(paramDefault)) {
+						String[] paramDefaults = paramDefault.split(",");
+ 						content.put("paramValue", paramDefaults);
+					}else {
+						content.put("paramValue", new ArrayList());
+					}
+				}
+				components.get(i).setContent(JSON.toJSONString(content));
+			}
+		}
 		result.setComponents(components);
 		return result;
+	}
+	
+	private void processDateParam(ReportParamDto param) throws ParseException {
+		if(StringUtil.isNotEmpty(param.getParamDefault()))
+		{
+			String dateDefaultValue = param.getParamDefault();
+			param.setDateDefaultValue(dateDefaultValue);
+			String dateFormat = param.getDateFormat();
+			if("YYYY-MM-DD".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_LONOGRAM;
+			}else if("YYYY-MM".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_YEARMONTH;
+			}else if("YYYY-MM-DD HH:mm".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_WITHOUTSECONDS;
+			}else if("YYYY-MM-DD HH:mm:ss".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_FULL;
+			}else if("YYYY".equals(dateFormat))
+			{
+				dateFormat = DateUtil.FORMAT_YEAR;
+			}else {
+				if(StringUtil.isNullOrEmpty(dateFormat)) {
+					dateFormat = DateUtil.FORMAT_LONOGRAM;
+				}
+			}
+			if(Constants.CURRENT_DATE.equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//当前日期
+				String currentDate = DateUtil.getNow(StringUtil.isNotEmpty(dateFormat)?dateFormat:DateUtil.FORMAT_LONOGRAM);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.WF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本周第一天
+				String currentDate = DateUtil.getWeekStart();
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.WL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本周最后一天
+				String currentDate = DateUtil.getWeekEnd();
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.MF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本月第一天
+				String currentDate = DateUtil.getMonthStart();
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.ML.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本月最后一天
+				String currentDate = DateUtil.getMonthEnd();
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.SF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本季度第一天
+				String currentDate = DateUtil.getQuarterStart(new Date());
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.SL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本季度最后一天
+				String currentDate = DateUtil.getQuarterEnd(new Date());
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.YF.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本年度第一天
+				String currentDate = DateUtil.getYearStart();
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else if(DefaultDateTypeEnum.YL.getCode().equals(StringUtil.trim(param.getParamDefault()).toLowerCase()))
+			{//本年度最后一天
+				String currentDate = DateUtil.getYearEnd();
+				currentDate = DateUtil.date2String(DateUtil.string2Date(currentDate), dateFormat);
+				param.setParamDefault(currentDate);
+				param.setDateFormat(StringUtil.isNotEmpty(param.getDateFormat())?param.getDateFormat():DateUtil.FORMAT_LONOGRAM);
+			}else {
+				if(CheckUtil.isNumber(param.getParamDefault()))
+				{
+					int days = Double.valueOf(param.getParamDefault()).intValue();
+					if(DateUtil.FORMAT_YEARMONTH.equals(dateFormat))
+					{
+						String date = DateUtil.addMonth(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEARMONTH);
+						param.setParamDefault(date);
+					}else if(DateUtil.FORMAT_YEAR.equals(dateFormat))
+					{
+						String date = DateUtil.addYear(days, DateUtil.getNow(DateUtil.FORMAT_LONOGRAM),DateUtil.FORMAT_YEAR);
+						param.setParamDefault(date);
+					}else {
+						String date = DateUtil.addDays(days, DateUtil.getNow(),StringUtil.isNotEmpty(param.getDateFormat())?dateFormat:DateUtil.FORMAT_LONOGRAM);
+						if(StringUtil.isNullOrEmpty(param.getDateFormat()))
+						{
+							param.setDateFormat(DateUtil.FORMAT_LONOGRAM);
+						}
+						param.setParamDefault(date);
+					}
+				}else {
+					if(StringUtil.isNullOrEmpty(dateFormat)) {
+						dateFormat = DateUtil.FORMAT_LONOGRAM;
+					}
+					if(!DateUtil.isValidDate(param.getParamDefault(),dateFormat))
+					{
+						param.setParamDefault("");
+					}
+				}
+			}
+		}
 	}
 
 

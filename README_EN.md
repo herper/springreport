@@ -123,13 +123,15 @@ If you need technical support from the author, you can contact him through the W
 5. The OnlyOffice version Word designer uses the community version, and non-community versions need to contact OnlyOffice to purchase authorization by yourself.
 
 ## Infringement Blacklist
-The following companies have infringed the use of SpringReport, please avoid risks when cooperating:
+### Enterprises on the blacklist have infringed the copyright of SpringReport. If your company has business cooperation with any of these enterprises, please strictly check all report-related projects and avoid unauthorized use of SpringReport, so as to prevent infringement risks and economic losses.
+### All paid users are prohibited from carrying out any project cooperation involving SpringReport with blacklisted enterprises. Meanwhile, if blacklisted enterprises intend to purchase official authorization in the future, they shall not be eligible for the official standard pricing or regular preferential policies.
 
 | Serial Number | Company Name               | Unified Social Credit Code       |
 |------|------------------------|------------------------|
 | 1    | 青岛艾瑞信息科技有限公司 | 91370203350278010W     |
 | 2    | 杭州务新网络科技有限公司 | 91330108341851735A     |
 | 3    | 深圳市牛童信息技术有限公司 | 91440300088334151A    |
+| 4 | 郑州粮食批发市场有限公司  | 91410000415800253F  |
 
 ## Donation Support
 Open source is not easy. If SpringReport is helpful to you, you can support the research and development through the following donation methods:

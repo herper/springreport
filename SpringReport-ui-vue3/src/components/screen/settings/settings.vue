@@ -41,6 +41,7 @@
     <card-list-setting-component  v-if="component.category == screenConstants.category.cardList" :component="component" :charts-components="chartsComponents" :components="components"></card-list-setting-component>
     <tabs-card-setting-component  v-if="component.category == screenConstants.category.tabsCard" :component="component" :charts-components="chartsComponents" :components="components"></tabs-card-setting-component>
     <table-map-setting-component v-if="component.category == screenConstants.category.tableMap" :component="component" :charts-components="chartsComponents" :components="components"></table-map-setting-component>
+    <forms-setting-component v-if="component.category == screenConstants.category.forms" :component="component" :charts-components="chartsComponents" :components="components"></forms-setting-component>
   </div>
 </template>
 <script>
@@ -55,6 +56,7 @@
   import cardListSettingComponent from '../cardList/cardListSettingComponent.vue'
   import tabsCardSettingComponent from '../tabsCard/tabsCardSettingComponent.vue'
   import tableMapSettingComponent from '../tableMap/tableMapSettingComponent.vue'
+  import formsSettingComponent from '../formsSetting/formsSettingComponent.vue'
   export default {
     name: 'settings',
     components: {
@@ -68,7 +70,8 @@
       numberFlipperSettingComponent,
       cardListSettingComponent,
       tabsCardSettingComponent,
-      tableMapSettingComponent
+      tableMapSettingComponent,
+      formsSettingComponent,
     },
     props: {
       component: {

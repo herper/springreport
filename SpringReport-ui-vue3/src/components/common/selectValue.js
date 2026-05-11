@@ -817,9 +817,9 @@ selectUtil.type2 = [
 ];
 
 selectUtil.dateFormat2 = [
-  { value: 'yyyy-MM-dd', label: 'yyyy-MM-dd' },
-  { value: 'yyyy-MM-dd HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
-  { value: 'yyyy-MM-dd HH:mm', label: 'yyyy-MM-dd HH:mm' },
+  { value: 'YYYY-MM-DD', label: 'yyyy-MM-dd' },
+  { value: 'YYYY-MM-DD HH:mm:ss', label: 'yyyy-MM-dd HH:mm:ss' },
+  { value: 'YYYY-MM-DD HH:mm', label: 'yyyy-MM-dd HH:mm' },
 ];
 
 selectUtil.xAxisDataType = [
@@ -993,5 +993,21 @@ selectUtil.headerValueType = [
 selectUtil.sheetLoopType = [
   { value: 1, label: '自定义' },
   { value: 2, label: 'SQL语句' }
+]
+
+selectUtil.componentSize = [
+  { value: 'large', label: 'large' },
+  { value: 'default', label: 'default' },
+  { value: 'small', label: 'small' },
+]
+
+selectUtil.triggerTiming = [
+  { value: '1', label: '按钮点击触发' },
+  { value: '2', label: '修改后触发' },
+]
+
+selectUtil.dataType = [
+  { value: '1', label: '自定义' },
+  { value: '2', label: 'SQL语句' }
 ]
 export default selectUtil;
