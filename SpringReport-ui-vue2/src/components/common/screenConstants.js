@@ -314,7 +314,14 @@ screenConstants.compType = {
   cardList: { text: '卡片列表', icon: 'cardList' },
   tabsCard: { text: '选项卡', icon: 'tabsCard' },
   tableMap: { text: '地图表格', icon: 'tableMap' },
-  forms: { text: '表单', icon: 'tableMap' },
+  formsDate: { text: '日期时间', icon: 'forms' },
+  formsDateRange: { text: '日期范围', icon: 'forms' },
+  formsSelect: { text: '下拉单选', icon: 'forms' },
+  formsMultiselect: { text: '下拉多选', icon: 'forms' },
+  formsTreeselect: { text: '下拉树单选', icon: 'forms' },
+  formsMultitree: { text: '下拉树多选', icon: 'forms' },
+  formsCascader: { text: '级联选择', icon: 'forms' },
+  formsButton: { text: '按钮', icon: 'forms' },
 }
 
 screenConstants.textType = [
