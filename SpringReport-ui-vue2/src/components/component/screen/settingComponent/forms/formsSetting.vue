@@ -92,6 +92,7 @@
             <el-link v-if="(component.type=='formsSelect' || component.type=='formsMultiselect')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select code as value, name as name from table 注意：返回的属性中必须有 value 和 name</el-link>
             <el-link v-if="(component.type=='formsTreeselect' || component.type=='formsMultitree')&&component.dataType == '1'" :underline="false" type="warning">自定义数据格式：[{"id":"1","name":"name","pid":"0"},{"id":"2","name":"name2","pid":"1"}] 注意：属性中必须有 id,name和pid</el-link>
             <el-link v-if="(component.type=='formsTreeselect' || component.type=='formsMultitree')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select deptId as id, deptName as name,parentId as pid from table 注意：返回的属性中必须有 id,name和pid</el-link>
+            <el-link v-if="(component.type=='formsCascader')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select code as value, area_name as name from table 注意：返回的属性中必须有 value和name</el-link>
           </el-form-item>
           <el-form-item label="按钮颜色" v-if="component.type=='formsButton'">
             <input-color-picker :input-width="152" :value="component.style.btnColor" @change="(val)=>{component.style.btnColor=val;changeColor(2)}" />

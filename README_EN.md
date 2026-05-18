@@ -131,7 +131,6 @@ If you need technical support from the author, you can contact him through the W
 | 1    | 青岛艾瑞信息科技有限公司 | 91370203350278010W     |
 | 2    | 杭州务新网络科技有限公司 | 91330108341851735A     |
 | 3    | 深圳市牛童信息技术有限公司 | 91440300088334151A    |
-| 4 | 郑州粮食批发市场有限公司  | 91410000415800253F  |
 
 ## Donation Support
 Open source is not easy. If SpringReport is helpful to you, you can support the research and development through the following donation methods:

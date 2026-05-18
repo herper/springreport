@@ -64,82 +64,85 @@ public class ReportDataUtil {
 		List<Map<String, Object>> list = null;
 		Object resultObj = null;
 		Long total = 0l;
-		if(ResultTypeEnum.OBJECT.getCode().equals(apiResultType))
-		{//返回类型是对象
-			JSONObject jsonObject = JSONObject.parseObject(apiResult);
-			Object apiResultObject = jsonObject;
-			if(StringUtil.isNotEmpty(apiPrefix) && jsonObject != null)
-			{//前缀是否为空
-				String[] prefixes = apiPrefix.split("[.]");
-				for (int j = 0; j < prefixes.length; j++) {
-					if(apiResultObject instanceof JSONObject) {
-						Object object = ((JSONObject)apiResultObject).get(prefixes[j]);
-						if(object instanceof JSONObject)
-						{
-							if(j == prefixes.length - 1)
+		if(StringUtil.isNotEmpty(apiResult)) {
+			if(ResultTypeEnum.OBJECT.getCode().equals(apiResultType))
+			{//返回类型是对象
+				JSONObject jsonObject = JSONObject.parseObject(apiResult);
+				Object apiResultObject = jsonObject;
+				if(StringUtil.isNotEmpty(apiPrefix) && jsonObject != null)
+				{//前缀是否为空
+					String[] prefixes = apiPrefix.split("[.]");
+					for (int j = 0; j < prefixes.length; j++) {
+						if(apiResultObject instanceof JSONObject) {
+							Object object = ((JSONObject)apiResultObject).get(prefixes[j]);
+							if(object instanceof JSONObject)
 							{
-								resultObj = object;
+								if(j == prefixes.length - 1)
+								{
+									resultObj = object;
+								}else {
+									jsonObject = JSONObject.parseObject(JSONObject.toJSONString(object));
+									apiResultObject = jsonObject;
+									if(StringUtil.isNotEmpty(totalAttr)) {
+										total = jsonObject.getLongValue(totalAttr);
+									}
+								}
+								
+							}else if(object instanceof JSONArray)
+							{
+								if(j == prefixes.length - 1)
+								{
+									resultObj = object;
+									if(StringUtil.isNotEmpty(totalAttr)) {
+										total = jsonObject.getLongValue(totalAttr);
+									}
+								}else {
+									JSONArray datas = (JSONArray) object;
+									apiResultObject = datas;
+								}
 							}else {
-								jsonObject = JSONObject.parseObject(JSONObject.toJSONString(object));
-								apiResultObject = jsonObject;
-								if(StringUtil.isNotEmpty(totalAttr)) {
-									total = jsonObject.getLongValue(totalAttr);
+								throw new BizException(StatusCode.FAILURE,"不支持的返回值格式。");
+							}
+						}else if(apiResultObject instanceof JSONArray) {
+							JSONArray apiResultObjectArray = (JSONArray) apiResultObject;
+							JSONArray datas = new JSONArray();
+							if(ListUtil.isNotEmpty(apiResultObjectArray)) {
+								for (int i = 0; i < apiResultObjectArray.size(); i++) {
+									JSONObject data = apiResultObjectArray.getJSONObject(i);
+									Object subData = data.get(prefixes[j]);
+									if(subData instanceof JSONObject) {
+										datas.add(subData);
+									}else {
+										datas.addAll((JSONArray)subData);
+									}
 								}
 							}
-							
-						}else if(object instanceof JSONArray)
-						{
-							if(j == prefixes.length - 1)
-							{
-								resultObj = object;
-								if(StringUtil.isNotEmpty(totalAttr)) {
-									total = jsonObject.getLongValue(totalAttr);
-								}
-							}else {
-								JSONArray datas = (JSONArray) object;
-								apiResultObject = datas;
+							apiResultObject = datas;
+							if(j == prefixes.length - 1) {
+								resultObj = apiResultObject;
 							}
 						}else {
 							throw new BizException(StatusCode.FAILURE,"不支持的返回值格式。");
 						}
-					}else if(apiResultObject instanceof JSONArray) {
-						JSONArray apiResultObjectArray = (JSONArray) apiResultObject;
-						JSONArray datas = new JSONArray();
-						if(ListUtil.isNotEmpty(apiResultObjectArray)) {
-							for (int i = 0; i < apiResultObjectArray.size(); i++) {
-								JSONObject data = apiResultObjectArray.getJSONObject(i);
-								Object subData = data.get(prefixes[j]);
-								if(subData instanceof JSONObject) {
-									datas.add(subData);
-								}else {
-									datas.addAll((JSONArray)subData);
-								}
-							}
-						}
-						apiResultObject = datas;
-						if(j == prefixes.length - 1) {
-							resultObj = apiResultObject;
-						}
-					}else {
-						throw new BizException(StatusCode.FAILURE,"不支持的返回值格式。");
+						
 					}
-					
+				}else {
+					resultObj = JSONObject.parseObject(apiResult);
+					if(StringUtil.isNotEmpty(totalAttr)) {
+						total = jsonObject.getLongValue(totalAttr);
+					}
 				}
-			}else {
-				resultObj = JSONObject.parseObject(apiResult);
-				if(StringUtil.isNotEmpty(totalAttr)) {
-					total = jsonObject.getLongValue(totalAttr);
+			}else {//返回类型是对象数组
+				JSONArray jsonArray = JSONArray.parseArray(apiResult);
+				if(jsonArray.get(0) instanceof JSONObject)
+				{
+					resultObj = jsonArray;
+				}else {
+					throw new BizException(StatusCode.FAILURE, "不支持的返回值格式。");
 				}
-			}
-		}else {//返回类型是对象数组
-			JSONArray jsonArray = JSONArray.parseArray(apiResult);
-			if(jsonArray.get(0) instanceof JSONObject)
-			{
-				resultObj = jsonArray;
-			}else {
-				throw new BizException(StatusCode.FAILURE, "不支持的返回值格式。");
 			}
 		}
+		
 		if(resultObj instanceof JSONObject)
 		{
 			list = new ArrayList<Map<String,Object>>();

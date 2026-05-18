@@ -368,11 +368,12 @@ public class ScreenTplServiceImpl extends ServiceImpl<ScreenTplMapper, ScreenTpl
 		queryWrapper.eq("tpl_id", screenTpl.getId());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<ScreenContent> components = this.iScreenContentService.list(queryWrapper);
+		ObjectMapper objectMapper = new ObjectMapper();
 		if(ListUtil.isNotEmpty(components)) {
 			JSONObject content = null;
 			ReportParamDto reportParamDto = null;
 			for (int i = 0; i < components.size(); i++) {
-				content = JSON.parseObject(components.get(i).getContent());
+				content = objectMapper.readValue(components.get(i).getContent(), JSONObject.class);
 				String type = content.getString("type");
 				if("formsDate".equals(type)) {
 					//日期类型

@@ -73,6 +73,8 @@ public class LuckySheetCellUtil {
     
     private static Map<String, String> numberFormat = new HashMap<>();//数字格式
     
+    private static Map<String, String> fontjson = new HashMap<>();//字体格式
+    
     static{
     	numberFormat.put("##0.00","1");
     	numberFormat.put("0","1");
@@ -89,6 +91,22 @@ public class LuckySheetCellUtil {
     	numberFormat.put("0.0000","1");
     	numberFormat.put("0.000%","1");
     	numberFormat.put("0.0000%","1");
+	}
+    
+    static{
+    	fontjson.put("0","Times New Roman");
+    	fontjson.put("1","Arial");
+    	fontjson.put("2","Tahoma");
+    	fontjson.put("3","Verdana");
+    	fontjson.put("4","微软雅黑");
+    	fontjson.put("5","宋体");
+    	fontjson.put("6","黑体");
+    	fontjson.put("7","楷体");
+    	fontjson.put("8","仿宋");
+    	fontjson.put("9","新宋体");
+    	fontjson.put("10","华文新魏");
+    	fontjson.put("11","华文行楷");
+    	fontjson.put("12","华文隶书");
 	}
     
     /**  
@@ -168,6 +186,12 @@ public class LuckySheetCellUtil {
 				java.awt.Rectangle rec = font.getStringBounds(wordContent, frc).getBounds();
 				int rows = (int) Math.ceil(width/colWidth) ;
 				float poiHeight = (float) ((rec.height+3) * rows);
+				if(rowlen.containsKey(i+"")) {
+					float height = Float.parseFloat(String.valueOf(rowlen.get(i+"")))*0.75f;
+					if(height > poiHeight) {
+						poiHeight = height;
+					}
+				}
 				row.setHeightInPoints(poiHeight);
    			}
    			
@@ -1095,7 +1119,12 @@ public class LuckySheetCellUtil {
 		//字体
 		if(cellConfig.containsKey(LuckySheetPropsEnum.FONTFAMILY.getCode()))
 		{
-			result.put("fontName", cellConfig.get(LuckySheetPropsEnum.FONTFAMILY.getCode()));
+			String fontCode = cellConfig.get(LuckySheetPropsEnum.FONTFAMILY.getCode())+"";
+			if(fontjson.containsKey(fontCode)) {
+				result.put("fontName", fontjson.get(cellConfig.get(LuckySheetPropsEnum.FONTFAMILY.getCode())+""));
+			}else {
+				result.put("fontName", Constants.DEFAULT_FONT_FAMILY);
+			}
 		}else {
 			result.put("fontName", Constants.DEFAULT_FONT_FAMILY);
 		}

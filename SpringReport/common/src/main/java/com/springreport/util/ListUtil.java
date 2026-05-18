@@ -797,6 +797,17 @@ public class ListUtil {
 		return listDatas;
 	}
 	
+	public static List<List<Map<String, Object>>> groupDatas(List<List<Map<String, Object>>> datas,String attr){
+		List<List<Map<String, Object>>> listDatas = new ArrayList<>();
+		List<String> attrs = new ArrayList<String>();
+		attrs.add(attr);
+		for (int i = 0; i < datas.size(); i++) {
+			List<List<Map<String, Object>>> groupDatas = groupDatas(datas.get(i), attrs);
+			listDatas.addAll(groupDatas);
+		}
+		return listDatas;
+	}
+	
 	public static List<List<Map<String, Object>>> groupDatas(List<Map<String, Object>> datas,List<String> attrs,Map<Integer, List<WordTableMerge>> mergeInfos){
 		List<List<Map<String, Object>>> result = null;
 		List<List<Map<String, Object>>> listDatas = new ArrayList<>();
