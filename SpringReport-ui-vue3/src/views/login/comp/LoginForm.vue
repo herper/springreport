@@ -121,6 +121,7 @@
                 localStorage.setItem(commonConstants.sessionItem.authorization, responseData.token);
                 localStorage.setItem(commonConstants.sessionItem.userName, responseData.userName);
                 localStorage.setItem(commonConstants.sessionItem.roleName, responseData.roleName);
+                localStorage.setItem(commonConstants.sessionItem.userId, responseData.userId);
                 localStorage.setItem(commonConstants.sessionItem.apiList, responseData.apis); //接口权限，用于判断页面按钮是否显示
                 localStorage.setItem(
                   commonConstants.sessionItem.isSystemMerchant,

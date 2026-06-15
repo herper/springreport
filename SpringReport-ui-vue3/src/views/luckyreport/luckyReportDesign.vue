@@ -930,6 +930,36 @@
                     @change="changeCellAttr('allowEdit','formsAttrs')"
                   />
                 </el-form-item>
+                <el-form-item label="修改权限" v-show="cellForm.formsAttrs.allowEdit=='1'">
+                  <el-select
+                    v-model="cellForm.formsAttrs.editAuth"
+                    style="width: 100%"
+                    placeholder="修改权限"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('editAuth','formsAttrs')"
+                  >
+                    <el-option label="所有人" value="1" />
+                    <el-option label="指定用户" value="2" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="指定用户" v-show="cellForm.formsAttrs.allowEdit=='1' && cellForm.formsAttrs.editAuth == '2'">
+                  <el-select
+                    v-model="cellForm.formsAttrs.editUsers"
+                    multiple
+                    filterable
+                    style="width: 100%"
+                    placeholder="指定用户"
+                    :disabled="attrDisabled"
+                    @change="changeCellAttr('editUsers','formsAttrs')"
+                  >
+                  <el-option
+                      v-for="op in editUsers"
+                      :key="op.id"
+                      :label="op.userName"
+                      :value="op.id"
+                    />
+                  </el-select>
+                </el-form-item>
                 <el-form-item label="值类型">
                   <el-select
                     v-model="cellForm.formsAttrs.valueType"

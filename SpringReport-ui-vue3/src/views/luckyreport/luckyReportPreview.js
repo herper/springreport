@@ -1518,6 +1518,20 @@ export default {
             if (!allowEdit) {
               this.commonUtil.showMessage({ message: '该单元格不允许进行编辑。', type: 'error' })
               return false
+            }else{
+              let config = this.extraCustomCellConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
+              let editAuth = config.editAuth;
+              console.log(editAuth)
+              if(editAuth == '2'){
+                let localUserId = localStorage.getItem(this.commonConstants.sessionItem.userId)+"";
+                let editUsers = config.editUsers;
+                if((editUsers && editUsers.includes(localUserId))){
+
+                }else{
+                  this.commonUtil.showMessage({ message: '您没有编辑该单元格的权限！', type: 'error' })
+                  return false
+                }
+              }
             }
           }
         }
@@ -3425,6 +3439,19 @@ export default {
             if (!allowEdit) {
               this.commonUtil.showMessage({ message: '单元格不允许进行编辑。', type: 'error' })
               return false
+            }else{
+              let config = this.extraCustomCellConfigs[sheetIndex][orginCell.r + '_' + orginCell.c]
+              let editAuth = config.editAuth;
+              if(editAuth == '2'){
+                let localUserId = localStorage.getItem(this.commonConstants.sessionItem.userId)+"";
+                let editUsers = config.editUsers;
+                if((editUsers && editUsers.includes(localUserId))){
+
+                }else{
+                  this.commonUtil.showMessage({ message: '您没有编辑该单元格的权限！', type: 'error' })
+                  return false
+                }
+              }
             }
           }
         }
