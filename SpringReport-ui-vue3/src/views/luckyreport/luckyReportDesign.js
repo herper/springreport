@@ -408,9 +408,12 @@ export default {
           compareCells: [],
           sourceType:1,
           content:"",
-          forceUpdate:false
+          forceUpdate:false,
+          editAuth:"1",//修改权限 1所有人可修改 2指定用户
+          editUsers:[],//当editauth=2的时候需要设置
         },//填报配置
       },
+      editUsers:[],//填报报表编辑权限用户
       delSheetsIndex: [], //删除的sheet index
       xAxisVisiable: false,
       xAxisForm: {
@@ -972,6 +975,7 @@ export default {
       options.isReport = true;
       if(this.tplType != 1){
         this.sheetOptions.showtoolbarConfig.datasource = true;
+        this.getEditUsers();
       }
       if(this.isThirdParty != 1){
         options.gridKey = 'designMode-' + reportTplId;
@@ -6339,6 +6343,18 @@ export default {
         this.authTitle = "为工作表【"+sheetName+"】添加保护权限";
         this.addAuthForm.authType = "2"
         this.addAuthVisiable = true;
-      } 
+      },
+      getEditUsers() {
+        const obj = {
+          url: this.apis.sysUser.getUsersApi,
+          params: {},
+          removeEmpty: false
+        }
+        this.commonUtil.doPost(obj).then(response => {
+          if (response.code == '200') {
+            this.editUsers = response.responseData
+          }
+        })
+      }, 
   },
 };
