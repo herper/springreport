@@ -159,3 +159,4 @@ Open source is not easy. If SpringReport is helpful to you, you can support the 
 | *哒          | 15    | 朝花夕拾       | 30    |
 | *句          | 30    | *海              | 100     |
 | *p          | 20    |   *煜          |  100    |
+| *条          | 20    |             |      |

@@ -452,7 +452,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		if(this.merchantmode == YesNoEnum.YES.getCode()) {
 			queryWrapper.eq("merchant_no", sysUserDto.getMerchantNo());
 		}
-		queryWrapper.ne("id", userInfoDto.getUserId());
+//		queryWrapper.ne("id", userInfoDto.getUserId());
 		queryWrapper.eq("del_flag", DelFlagEnum.UNDEL.getCode());
 		List<SysUser> result = this.list(queryWrapper);
 		return result;
