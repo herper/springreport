@@ -121,7 +121,7 @@ export default {
               component.locked = true;
               tempComponent.push(component)
               let type = component.type
-              if(type == "formsDate" || type == "formsDateRange" || type == "formsSelect" || type == "formsMultiselect" || type == "formsTreeselect" || type == "formsMultitree" || type == "formsCascader"){
+              if(type == "formsDate" || type == "formsDateRange" || type == "formsSelect" || type == "formsMultiselect" || type == "formsTreeselect" || type == "formsMultitree" || type == "formsCascader" || type == "formsRadio"){
                 let paramCode = component.paramCode;
                 if (that.$route.query[paramCode]) {
                   if(type == "formsDateRange" || type == "formsMultiselect" || type == "formsMultitree" || type == "formsCascader"){

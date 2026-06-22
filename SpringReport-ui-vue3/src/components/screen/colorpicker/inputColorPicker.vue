@@ -6,13 +6,14 @@
 -->
 <template>
   <div class="public-input-color-picker">
-    <el-input :style="{width:inputWidth+'px'}" v-model="value2" :placeholder="placeholder" @input="handleChange" />
+    <!-- <el-input :style="{width:inputWidth+'px'}" v-model="value2" :placeholder="placeholder" @input="handleChange" /> -->
     <el-color-picker
       v-model="value2"
       :show-alpha="showAlpha"
       :predefine="predefineColors"
       @change="handleChange"
     />
+    <span :style="{width:inputWidth+'px',height:'20px',paddingLeft:'40px'}"  :placeholder="placeholder" @input="handleChange" >{{value2}}</span>
   </div>
 </template>
 <script>
@@ -91,7 +92,7 @@ export default {
   }
   :deep(.el-color-picker) {
     position: absolute;
-    right: 0;
+    left: 0;
     top: 0;
   }
   :deep(.el-color-picker__trigger) {
