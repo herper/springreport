@@ -807,13 +807,13 @@ public class JdbcUtils {
 	 * @date 2021-11-01 02:59:05 
 	 */ 
 	public static String processSqlParams(String sql,Map<String, Object> params) throws JSQLParserException {
-		if(params != null)
-		{
-			try {
-				sql = MybatisTemplateSqlExcutor.parseSql(sql, params);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if(params == null) {
+			params = new HashMap<String, Object>();
+		}
+		try {
+			sql = MybatisTemplateSqlExcutor.parseSql(sql, params);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		System.err.println("解析后的sql："+sql);
 	    return sql;
