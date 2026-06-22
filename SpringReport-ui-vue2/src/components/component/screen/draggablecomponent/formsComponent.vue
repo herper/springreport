@@ -179,6 +179,10 @@
             @change="changeValue(component)"
             clearable
             ></el-cascader>
+         <el-radio-group v-model="component.paramValue" :size="component.style.size"  v-if="component.type === 'formsRadio'" @change="changeValue(component)">
+          <el-radio v-for="op in component.selectContent" :key="op.value"
+            :label="op.value" border>{{op.name}}</el-radio>
+        </el-radio-group>
         <el-button v-if="component.type === 'formsButton'" :size="component.style.size" :style="{ backgroundColor: component.style.btnColor, color: component.style.fontColor,width:component.width+'px',fontSize:component.style.fontSize+'px' }" @click="changeValue(component)">{{component.btnText}}</el-button>
   </div>
  </div>
@@ -207,6 +211,10 @@ export default {
       type: Array,
       default: () => []
     },
+    formsParams: {
+      type: Object,
+      default: () => ({})
+    },
   },
   data () {
         return {
@@ -227,45 +235,11 @@ export default {
   methods: {
     //数据初始化
     initData(searchParams) {
-      if (this.sendRequest) {
-        if (this.component.dataSource == "2") {
-            this.getData(this.component,searchParams);
-            if(this.component.refresh){
-               var self = this;
-                setInterval(() => {
-                    setTimeout(function(){self.getData(self.component,searchParams)}, 0)
-                }, this.component.refreshTime)
-            }
-        }
-      }
-    },
-    getData(component,searchParams) {
       let pageParams = this.commonUtil.searchParamMap(searchParams)
-      var params = {
-        dataSetId: component.dynamicDataSettings.datasetId,
-        dataColumns: component.dynamicDataSettings.dataColumns,
-        sqlType: "1",
-      };
-      var componentParams = this.commonUtil.getComponentParams(
-        component.params
-      );
-      params.params = Object.assign({}, componentParams, pageParams);
-      let obj = {
-        url: this.apis.screenDesign.getDynamicDatasApi,
-        params: params,
-        removeEmpty: false,
-      };
-      var that = this;
-      this.commonUtil.doPost(obj).then((response) => {
-        if (response.code == "200") {
-          component.spec.data.values = response.responseData;
-          if(component.spec.valueField && component.spec.data.values && component.spec.data.values.length > 0){
-              component.content = component.spec.data.values[0][component.spec.valueField];
-              that.commonUtil.reLoadChart(that.chartsComponents,component);
-          }
-        }
-      });
+      let params = Object.assign({}, pageParams,this.formsParams);
+      this.changeDataContent(params);
     },
+    
     changeValue(component){
       if(component.triggerTiming != '1' && this.$parent.$parent.$parent.refreshComponentData){
         this.$parent.$parent.$parent.refreshComponentData();
@@ -296,6 +270,63 @@ export default {
               resolve(response.responseData);
             }
           })
+    },
+    changeDataContent(params){
+      if(this.component.dataType == '2'){
+        if(this.component.type=="formsSelect" || this.component.type=="formsMultiselect" || this.component.type=="formsRadio"){
+          this.getSelectData(this.component,params)
+        }else if(this.component.type=="formsMultitree" || this.component.type=="formsTreeselect"){
+          this.getTreeSelectData(this.component,params)
+        }
+      }else{
+        if(this.component.type=="formsSelect" || this.component.type=="formsMultiselect" || this.component.type=="formsRadio"){
+          if(this.component.dataContent){
+            this.component.selectContent = JSON.parse(this.component.dataContent)
+          }else{
+            this.component.selectContent = []
+          }
+        }else if(this.component.type=="formsMultitree" || this.component.type=="formsTreeselect"){
+            this.component.selectContent = this.commonUtil.arrayToTree(JSON.parse(this.component.dataContent))
+        }else{
+            this.component.selectContent = []
+        }
+      }
+    },
+    getSelectData(item,params) {
+      if(item.dataContent){
+        var params = {
+            selectContent: item.dataContent,
+            datasourceId: item.datasourceId,
+            params: params
+          }
+          var obj = {
+            url: '/api/reportTplDataset/getSelectData',
+            params: params
+          }
+          this.commonUtil.doPost(obj).then((response) => {
+            if (response.code == '200') {
+              item.selectContent = response.responseData
+            }
+          })
+      }
+    },
+    getTreeSelectData(item,params) {
+      if(item.dataContent){
+        var params = {
+            selectContent: item.dataContent,
+            datasourceId: item.datasourceId,
+            params: params
+          }
+          var obj = {
+            url: '/api/reportTplDataset/getTreeSelectData',
+            params: params
+          }
+          this.commonUtil.doPost(obj).then((response) => {
+            if (response.code == '200') {
+              item.selectContent = response.responseData
+            }
+          })
+      }
     },
   },
 };

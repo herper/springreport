@@ -160,6 +160,7 @@
           :send-request="sendRequest"
           :searchParams="searchParams"
           :view-that="viewThat"
+          :formsParams="formsParams"
         />
       </div>
     </vue-draggable-resizable>
