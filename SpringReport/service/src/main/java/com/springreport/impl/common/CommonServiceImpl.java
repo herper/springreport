@@ -190,18 +190,22 @@ public class CommonServiceImpl implements ICommonService{
 	public JSONArray parseXlsxByUrl(JSONObject model) throws Exception {
 		JSONArray result = null;
 		String url = model.getString("url");
-		String redisKey = RedisPrefixEnum.ATTACHMENTCACHE.getCode() + Md5Util.generateMd5(url);
-		if(redisUtil.hasKey(redisKey)) {
-			result = JSONArray.parseArray(String.valueOf(redisUtil.get(redisKey)));
-		}else {
-			InputStream input = new URL(url).openStream();
-			String fileType = model.getString("fileType");
-			if("xlsx".equals(fileType)) {
-				result =  DocumentToLuckysheetUtil.xlsx2Luckysheet(input);
-			}else if("csv".equals(fileType)) {
-				result =  DocumentToLuckysheetUtil.csv2Luckysheet(input,model.getString("fileName"));
+		if(url.startsWith("http") || url.startsWith("https")) {
+			String redisKey = RedisPrefixEnum.ATTACHMENTCACHE.getCode() + Md5Util.generateMd5(url);
+			if(redisUtil.hasKey(redisKey)) {
+				result = JSONArray.parseArray(String.valueOf(redisUtil.get(redisKey)));
+			}else {
+				InputStream input = new URL(url).openStream();
+				String fileType = model.getString("fileType");
+				if("xlsx".equals(fileType)) {
+					result =  DocumentToLuckysheetUtil.xlsx2Luckysheet(input);
+				}else if("csv".equals(fileType)) {
+					result =  DocumentToLuckysheetUtil.csv2Luckysheet(input,model.getString("fileName"));
+				}
+				redisUtil.set(redisKey, JSON.toJSONString(result), 86400);
 			}
-			redisUtil.set(redisKey, JSON.toJSONString(result), 86400);
+		}else {
+			throw new BizException(StatusCode.FAILURE, "非法URL不允许访问！");
 		}
 		return result;
 	}

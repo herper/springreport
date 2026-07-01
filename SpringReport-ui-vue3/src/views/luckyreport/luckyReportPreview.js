@@ -115,8 +115,8 @@ export default {
           hideRow: true, // 隐藏选中行和显示选中行
           hideColumn: true, // 隐藏选中列和显示选中列
           matrix: false, // 矩阵操作选区
-          sort: false, // 排序选区
-          filter: false, // 筛选选区
+          sort: true, // 排序选区
+          filter: true, // 筛选选区
           chart: false, // 图表生成
           image: false, // 插入图片
           data: false, // 数据验证

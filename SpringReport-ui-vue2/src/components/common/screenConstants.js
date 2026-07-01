@@ -212,6 +212,7 @@ screenConstants.type = {
   formsTreeselect:'formsTreeselect',//表单下拉树单选
   formsMultitree:'formsMultitree',//表单下拉树多选
   formsCascader:'formsCascader',//表单级联选择
+  formsRadio:'formsRadio',//表单单选框
   formsButton:'formsButton',//表单按钮
 }
 
@@ -321,6 +322,7 @@ screenConstants.compType = {
   formsTreeselect: { text: '下拉树单选', icon: 'forms' },
   formsMultitree: { text: '下拉树多选', icon: 'forms' },
   formsCascader: { text: '级联选择', icon: 'forms' },
+  formsRadio: { text: '单选框', icon: 'forms' },
   formsButton: { text: '按钮', icon: 'forms' },
 }
 
@@ -476,6 +478,7 @@ screenConstants.formsType = [
   { 'name': 'formsTreeselect', 'text': '下拉树单选', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/formstree.png', category: screenConstants.category.forms },
   { 'name': 'formsMultitree', 'text': '下拉树多选', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/formstree.png', category: screenConstants.category.forms },
   { 'name': 'formsCascader', 'text': '级联选择', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/formscascader.png', category: screenConstants.category.forms },
+  { 'name': 'formsRadio', 'text': '单选框', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/formsRadio.png', category: screenConstants.category.forms },
   { 'name': 'formsButton', 'text': '按钮', 'src': `${process.env.VUE_APP_BASE_URL_PREFIX}`+'/images/chart/formsbutton.png', category: screenConstants.category.forms },
 ]
 
@@ -5900,6 +5903,34 @@ screenConstants.formsCascaderInit = {
   datasourceId:"",//数据源id
   dataContent:"",
   level:3,//级联层数
+  selectContent:[],
+  checkStrictly:false,
+  width:280,
+  style: {
+    display: 'table-cell', textAlign: 'center', verticalAlign: 'middle', fontSize: '14', background: '',size:"large"
+  },
+}
+
+screenConstants.formsRadioInit = {
+  type: screenConstants.type.formsRadio,
+  category: screenConstants.category.forms,
+  isDelete: false,
+  x: 0, // 初始化横坐标
+  y: 0, // 初始化纵坐标
+  w: 300, // 组件初始化宽度
+  h: 100, // 组件初始化高度
+  active: false,
+  zindex: '99',
+  locked: false,
+  isborder: false, // 是否添加边框
+  borderType: '', // 边框类型
+  borderColor: [], // 边框颜色
+  paramCode:"",//参数编码
+  paramValue:"",//参数值
+  triggerTiming:"1",//触发时机
+  dataType:"2",//1自定义 2sql语句
+  datasourceId:"",//数据源id
+  dataContent:"",
   selectContent:[],
   checkStrictly:false,
   width:280,

@@ -323,32 +323,12 @@ public class LuckySheetCellUtil {
 						{
 							List<Map<String, Object>> list = (List<Map<String, Object>>) cellType.get(LuckySheetPropsEnum.STRING.getCode());
 							String value = "";
-							JSONArray richStyles = new JSONArray();
-							JSONObject richStyle = null;
-							int start = 0;
+							XSSFRichTextString xssfRichTextString = new XSSFRichTextString();
 							for (int j = 0; j < list.size(); j++) {
-								if(list.get(j).get(LuckySheetPropsEnum.CELLVALUE.getCode()) != null)
-								{
-									richStyle = new JSONObject();
-									Map<String, Object> richCellStyleMap = this.getRichCellStyleMap(list.get(j));
-									value = value + String.valueOf(list.get(j).get(LuckySheetPropsEnum.CELLVALUE.getCode()));
-									richStyle.put("start", start);
-									richStyle.put("end", start+String.valueOf(list.get(j).get(LuckySheetPropsEnum.CELLVALUE.getCode())).length());
-									richStyle.put("styleMap", richCellStyleMap);
-									richStyles.add(richStyle);
-									start = start + String.valueOf(list.get(j).get(LuckySheetPropsEnum.CELLVALUE.getCode())).length();
-								}
-							}
-							XSSFRichTextString xssfRichTextString = new XSSFRichTextString(value);
-							if(!ListUtil.isEmpty(richStyles))
-							{
-								for (int j = 0; j < richStyles.size(); j++) {
-									int str = richStyles.getJSONObject(j).getIntValue("start");
-									int end = richStyles.getJSONObject(j).getIntValue("end");
-									Map<String, Object> styleMap = (Map<String, Object>) richStyles.getJSONObject(j).get("styleMap");
-									XSSFFont font = this.getRichCellFont(styleMap);
-									xssfRichTextString.applyFont(str, end, font);
-								}
+								Map<String, Object> richCellStyleMap = this.getRichCellStyleMap(list.get(j));
+								XSSFFont font = this.getRichCellFont(richCellStyleMap);
+								value = String.valueOf(list.get(j).get(LuckySheetPropsEnum.CELLVALUE.getCode()));
+								xssfRichTextString.append(value,font);
 							}
 							cell.setCellValue(xssfRichTextString);
 						}else {
@@ -1227,6 +1207,9 @@ public class LuckySheetCellUtil {
 	
 	private XSSFFont getRichCellFont(Map<String, Object> styleMap) {
 		XSSFFont font = (XSSFFont) wb.createFont();
+		if(styleMap.containsKey("fontSize")) {
+			font.setFontHeightInPoints(Short.parseShort(String.valueOf(styleMap.get("fontSize"))));
+		}
 		//字体设置
 		String fontName = String.valueOf(styleMap.get("fontName"));
 		font.setFontName(fontName);

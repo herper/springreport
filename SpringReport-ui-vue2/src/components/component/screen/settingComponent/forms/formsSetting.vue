@@ -53,7 +53,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="数据类型" v-show="component.type=='formsSelect' || component.type=='formsMultiselect' || component.type=='formsTreeselect' || component.type=='formsMultitree'">
+          <el-form-item label="数据类型" v-show="component.type=='formsSelect' || component.type=='formsMultiselect' || component.type=='formsTreeselect' || component.type=='formsMultitree' || component.type=='formsRadio'">
             <el-select v-model="component.dataType" placeholder="数据类型" @change="changeDataType">
               <el-option
                 v-for="item in selectUtil.dataType"
@@ -63,7 +63,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="(component.type=='formsSelect' || component.type=='formsMultiselect' || component.type=='formsTreeselect' || component.type=='formsMultitree' || component.type=='formsCascader') && component.dataType == '2'"
+          <el-form-item v-if="(component.type=='formsSelect' || component.type=='formsMultiselect' || component.type=='formsTreeselect' || component.type=='formsMultitree' || component.type=='formsCascader' || component.type=='formsRadio') && component.dataType == '2'"
             label="数据源"
           >
           <el-select
@@ -86,10 +86,10 @@
               inactive-text="联动"
           />
         </el-form-item>
-        <el-form-item  label="数据内容" v-if="(component.type=='formsSelect' || component.type=='formsMultiselect'|| component.type=='formsTreeselect' || component.type=='formsMultitree' || component.type=='formsCascader')">
+        <el-form-item  label="数据内容" v-if="(component.type=='formsSelect' || component.type=='formsMultiselect'|| component.type=='formsTreeselect' || component.type=='formsMultitree' || component.type=='formsCascader' || component.type=='formsRadio')">
             <el-input v-model="component.dataContent" type="textarea" :rows="2" @change="changeDataContent()"/>
-            <el-link v-if="(component.type=='formsSelect' || component.type=='formsMultiselect')&&component.dataType == '1'" :underline="false" type="warning">自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}] 注意：两个key必须是value 和 name</el-link>
-            <el-link v-if="(component.type=='formsSelect' || component.type=='formsMultiselect')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select code as value, name as name from table 注意：返回的属性中必须有 value 和 name</el-link>
+            <el-link v-if="(component.type=='formsSelect' || component.type=='formsMultiselect' || component.type=='formsRadio')&&component.dataType == '1'" :underline="false" type="warning">自定义数据格式：[{"value":"value1","name":"name1"},{"value":"value2","name":"name2"}] 注意：两个key必须是value 和 name</el-link>
+            <el-link v-if="(component.type=='formsSelect' || component.type=='formsMultiselect' || component.type=='formsRadio')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select code as value, name as name from table 注意：返回的属性中必须有 value 和 name</el-link>
             <el-link v-if="(component.type=='formsTreeselect' || component.type=='formsMultitree')&&component.dataType == '1'" :underline="false" type="warning">自定义数据格式：[{"id":"1","name":"name","pid":"0"},{"id":"2","name":"name2","pid":"1"}] 注意：属性中必须有 id,name和pid</el-link>
             <el-link v-if="(component.type=='formsTreeselect' || component.type=='formsMultitree')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select deptId as id, deptName as name,parentId as pid from table 注意：返回的属性中必须有 id,name和pid</el-link>
             <el-link v-if="(component.type=='formsCascader')&&component.dataType == '2'" :underline="false" type="warning">sql语句格式：select code as value, area_name as name from table 注意：返回的属性中必须有 value和name</el-link>
@@ -173,13 +173,13 @@ export default {
     },
     changeDataContent(){
       if(this.component.dataType == '2'){
-        if(this.component.type=="formsSelect" || this.component.type=="formsMultiselect"){
+        if(this.component.type=="formsSelect" || this.component.type=="formsMultiselect" || this.component.type=="formsRadio"){
           this.getSelectData(this.component)
         }else if(this.component.type=="formsMultitree" || this.component.type=="formsTreeselect"){
           this.getTreeSelectData(this.component)
         }
       }else{
-        if(this.component.type=="formsSelect" || this.component.type=="formsMultiselect"){
+        if(this.component.type=="formsSelect" || this.component.type=="formsMultiselect" || this.component.type=="formsRadio"){
           if(this.component.dataContent){
             this.component.selectContent = JSON.parse(this.component.dataContent)
           }else{
