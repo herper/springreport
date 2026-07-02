@@ -171,6 +171,7 @@
           :charts-components="chartsComponents"
           :send-request="sendRequest"
           :searchParams="searchParams"
+          :formsParams="formsParams"
         />
       </div>
     </Vue3DraggableResizable>
