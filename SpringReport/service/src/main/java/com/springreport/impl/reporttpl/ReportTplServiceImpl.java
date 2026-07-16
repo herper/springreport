@@ -5012,13 +5012,13 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 				Map<String, List<List<Map<String, Object>>>> datasCache = new HashMap<>();
 				int maxRow = 0;
 				int maxCol = 0;
-				int startCol = 0;
-				int endCol = 0;
 				Integer collaspeStr = null;//循环块折叠起始行
 				Map<String, Integer> rowAndCol = null;
 				LuckySheetBindData bindData = null;//自定义函数计算用
 	        	List<List<Map<String, Object>>> bindDatas = null;//自定义函数计算用
 				for (int m = 0; m < luckySheetBindData.getDatas().size(); m++) {
+					int startCol = 0;
+					int endCol = 0;
 					int z = 1;
 					if(loopCount > 1) {
 						z = (m+1)%loopCount;
@@ -5268,7 +5268,7 @@ public class ReportTplServiceImpl extends ServiceImpl<ReportTplMapper, ReportTpl
 										if(luckysheetReportBlockCells.get(t).getIsSubCell().intValue() == 1) {
 											for (int j = 0; j < datas.size(); j++) {
 												for (int i = 0; i < subLuckysheetReportBlockCells.size(); i++) {
-													if(m == 0&&l==0)
+													if(m==0 && l == 0 && j == 0)
 													{
 						 								rowAndCol = this.getMaxRowAndCol(maxCoordinate, subLuckysheetReportBlockCells.get(i).getCoordsx(),subLuckysheetReportBlockCells.get(i).getCoordsy(),1,1);
 						 								maxRow = rowAndCol.get("maxX");
