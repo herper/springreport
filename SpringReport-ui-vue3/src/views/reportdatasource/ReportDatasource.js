@@ -655,7 +655,8 @@ export default {
             propName: that.pageData.resultPropModalData.propName,
           };
           if (that.pageData.isEdit) {
-            that.$set(that.pageData.propsTableData, that.pageData.editIndex, obj);
+            // that.$set(that.pageData.propsTableData, that.pageData.editIndex, obj);
+            that.pageData.propsTableData[that.pageData.editIndex] = obj;
           } else {
             that.pageData.propsTableData.push(obj);
           }
